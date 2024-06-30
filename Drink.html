@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drink Order</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        select, button {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script>
+        let map;
+        let marker;
+
+        function initMap() {
+            const initialPosition = { lat: -34.397, lng: 150.644 };
+
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: initialPosition,
+                zoom: 8,
+            });
+
+            marker = new google.maps.Marker({
+                position: initialPosition,
+                map: map,
+                draggable: true,
+            });
+
+            google.maps.event.addListener(marker, 'dragend', function () {
+                document.getElementById('latitude').value = marker.getPosition().lat();
+                document.getElementById('longitude').value = marker.getPosition().lng();
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('orderForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const drink = document.getElementById('drink').value;
+                const latitude = document.getElementById('latitude').value;
+                const longitude = document.getElementById('longitude').value;
+
+                alert(`Drink: ${drink}\nLatitude: ${latitude}\nLongitude: ${longitude}`);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Order Your Favorite Drink</h1>
+        <form id="orderForm">
+            <label for="drink">Choose a drink:</label>
+            <select id="drink" name="drink">
+                <option value="milkshake">Milkshake</option>
+                <option value="ice">Ice</option>
+                <option value="icepop">Icepop</option>
+                <option value="alcohol">Alcohol</option>
+                <option value="soda">Soda</option>
+                <option value="coffee">Coffee</option>
+                <option value="tea">Tea</option>
+                <option value="smoothie">Smoothie</option>
+                <option value="juice">Juice</option>
+            </select>
+            <label for="location">Pin your location:</label>
+            <div id="map"></div>
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+            <button type="submit">Order Now</button>
+        </form>
+    </div>
+</body>
+</html>
